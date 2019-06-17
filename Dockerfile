@@ -13,6 +13,7 @@ FROM node:10-alpine as nodebuilder
 USER root
 WORKDIR /go/src/github.com/tektoncd/dashboard
 COPY . .
+RUN ls -la
 RUN npm install
 RUN npm run build
 
