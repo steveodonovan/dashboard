@@ -1,0 +1,31 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: e2e-dashboard-test-task
+spec:
+  steps:
+    - name: task-step-one
+      image: ubuntu
+      command: ["/bin/bash"]
+      args: ['-c', 'echo success']
+---
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: sample-pipeline-cluster-task
+spec:
+  tasks:
+    - name: e2e-dashboard-test-pipeline
+      taskRef:
+        name: e2e-dashboard-test-task
+        kind: Task
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name:  e2e-dashboard-test-pipeline-run
+spec:
+  pipelineRef:
+    name: e2e-dashboard-test-pipeline
+  trigger:
+    type: manual
