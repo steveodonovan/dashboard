@@ -12,10 +12,10 @@ spec:
 apiVersion: tekton.dev/v1alpha1
 kind: Pipeline
 metadata:
-  name: sample-pipeline-cluster-task
+  name: e2e-dashboard-test-pipeline
 spec:
   tasks:
-    - name: e2e-dashboard-test-pipeline
+    - name: e2e-dashboard-test-task
       taskRef:
         name: e2e-dashboard-test-task
         kind: Task
