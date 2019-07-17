@@ -9,19 +9,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM node:10-alpine as nodeBuilder
+FROM node:10-alpine as nodebuilder
 USER root
 WORKDIR /go/src/github.com/tektoncd/dashboard
-COPY . .
+COPY ./dashboard-git-7 .
+RUN ls -la
 RUN npm install
 RUN npm run build
 
-FROM golang:1.12-alpine as goBuilder
+FROM golang:1.12-alpine as gobuilder
 USER root
 RUN apk add curl git
 RUN curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64 && chmod +x /usr/local/bin/dep
 WORKDIR /go/src/github.com/tektoncd/dashboard
-COPY . .
+COPY ./dashboard-git-7 .
 RUN dep ensure -vendor-only
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o tekton_dashboard_backend ./cmd/dashboard
 
@@ -32,7 +33,7 @@ USER 1000
 
 WORKDIR /go/src/github.com/tektoncd/dashboard
 ENV WEB_RESOURCES_DIR=./web
-COPY --from=nodeBuilder /go/src/github.com/tektoncd/dashboard/dist ./web
-COPY --from=goBuilder /go/src/github.com/tektoncd/dashboard/tekton_dashboard_backend .
+COPY --from=nodebuilder /go/src/github.com/tektoncd/dashboard/dist ./web
+COPY --from=gobuilder /go/src/github.com/tektoncd/dashboard/tekton_dashboard_backend .
 
 ENTRYPOINT ["./tekton_dashboard_backend"]
