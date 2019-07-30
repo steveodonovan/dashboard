@@ -34,7 +34,6 @@ import {
   PipelineRun,
   PipelineRuns,
   Pipelines,
-  ResourceList,
   Secrets,
   SideNav,
   TaskRun,
@@ -146,41 +145,19 @@ export /* istanbul ignore next */ class App extends Component {
                 exact
                 component={Extensions}
               />
-              {extensions
-                .filter(extension => !extension.type)
-                .map(({ displayName, name, source }) => (
-                  <Route
-                    key={name}
-                    path={paths.extensions.byName({ name })}
-                    render={({ match }) => (
-                      <Extension
-                        displayName={displayName}
-                        match={match}
-                        source={source}
-                      />
-                    )}
-                  />
-                ))}
-              <Route
-                path={paths.kubernetesResources.byNamespace()}
-                exact
-                component={ResourceList}
-              />
-              <Route
-                path={paths.kubernetesResources.byName()}
-                exact
-                component={CustomResourceDefinition}
-              />
-              <Route
-                path={paths.kubernetesResources.cluster()}
-                exact
-                component={CustomResourceDefinition}
-              />
-              <Route
-                path={paths.kubernetesResources.all()}
-                exact
-                component={ResourceList}
-              />
+              {extensions.map(({ displayName, name, source }) => (
+                <Route
+                  key={name}
+                  path={paths.extensions.byName({ name })}
+                  render={({ match }) => (
+                    <Extension
+                      displayName={displayName}
+                      match={match}
+                      source={source}
+                    />
+                  )}
+                />
+              ))}
               <Route
                 path={paths.rawCRD.byNamespace()}
                 exact

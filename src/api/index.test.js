@@ -27,8 +27,6 @@ import {
   getClusterTasks,
   getCredential,
   getCredentials,
-  getCustomResource,
-  getCustomResources,
   getExtensionBundleURL,
   getExtensions,
   getNamespaces,
@@ -39,7 +37,6 @@ import {
   getPipelineRuns,
   getPipelines,
   getPodLog,
-  getResourcesAPI,
   getServiceAccounts,
   getTask,
   getTaskRun,
@@ -116,49 +113,6 @@ describe('getTektonAPI', () => {
     expect(uri).toContain('clustertasks');
     expect(uri).toContain('somename');
     expect(uri).not.toContain('namespaces');
-  });
-});
-
-describe('getResourceAPI', () => {
-  it('returns a URI containing the given type', () => {
-    const uri = getResourcesAPI({
-      group: 'test.dev',
-      version: 'testversion',
-      type: 'testtype'
-    });
-    expect(uri).toContain('test.dev');
-    expect(uri).toContain('testversion');
-    expect(uri).toContain('testtype');
-  });
-
-  it('returns a URI containing the given type and name without namespace', () => {
-    const uri = getResourcesAPI({
-      group: 'test.dev',
-      version: 'testversion',
-      type: 'testtype',
-      name: 'testname'
-    });
-    expect(uri).toContain('test.dev');
-    expect(uri).toContain('testversion');
-    expect(uri).toContain('testtype');
-    expect(uri).toContain('testname');
-    expect(uri).not.toContain('namespaces');
-  });
-
-  it('returns a URI containing the given type, name and namespace', () => {
-    const uri = getResourcesAPI({
-      group: 'test.dev',
-      version: 'testversion',
-      type: 'testtype',
-      namespace: 'testnamespace',
-      name: 'testname'
-    });
-    expect(uri).toContain('test.dev');
-    expect(uri).toContain('testversion');
-    expect(uri).toContain('testtype');
-    expect(uri).toContain('testname');
-    expect(uri).toContain('namespaces');
-    expect(uri).toContain('testnamespace');
   });
 });
 
@@ -561,35 +515,4 @@ it('getServiceAccounts', () => {
     expect(response).toEqual(data.items);
     fetchMock.restore();
   });
-});
-
-it('getResources', () => {
-  const group = 'testgroup';
-  const version = 'testversion';
-  const type = 'testtype';
-  const namespace = 'testnamespace';
-  const data = { items: 'resourcedata' };
-  fetchMock.get(`end:${type}/`, data);
-  return getCustomResources({ group, version, type, namespace }).then(
-    resources => {
-      expect(resources).toEqual(data.items);
-      fetchMock.restore();
-    }
-  );
-});
-
-it('getResource', () => {
-  const group = 'testgroup';
-  const version = 'testversion';
-  const type = 'testtype';
-  const name = 'testresource';
-  const namespace = 'testnamespace';
-  const data = { fake: 'resourcedata' };
-  fetchMock.get(`end:${name}`, data);
-  return getCustomResource({ group, version, type, namespace, name }).then(
-    resource => {
-      expect(resource).toEqual(data);
-      fetchMock.restore();
-    }
-  );
 });
